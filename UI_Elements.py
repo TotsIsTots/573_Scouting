@@ -8,10 +8,9 @@ pg.font.init()
 # define the window surface as the one used in main (in this case, 'WIN')
 win = main.WIN
 
-counter_list = []
-
 
 class Counter:
+    counter_list = []
 
     def __init__(self, x: int, y: int, size: int, value: int = 0, title: str = "", title_size: int = 14):
         if title != "":
@@ -46,7 +45,7 @@ class Counter:
             self.value_render.get_width(), size
         self.size = size
 
-        counter_list.append(self)
+        Counter.counter_list.append(self)
 
     def draw(self):
         if self.title != "":
@@ -59,14 +58,14 @@ class Counter:
 
     def handleInput():
         mouse_pos = pg.mouse.get_pos()
-        for c in counter_list:
+        for c in Counter.counter_list:
             if c.minus_rect.collidepoint(mouse_pos):
                 c.value -= 1
             if c.plus_rect.collidepoint(mouse_pos):
                 c.value += 1
 
     def update():
-        for counter in counter_list:
+        for counter in Counter.counter_list:
             if counter.title != "":
                 counter.title_render = counter.title_font.render(
                     str(counter.title), 1, counter.title_font_color)

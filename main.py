@@ -28,7 +28,7 @@ def drawBackground(screen_w, screen_h):
 
 def drawDisplay(screen_w, screen_h):
     drawBackground(screen_w, screen_h)
-    for c in UI_Elements.counter_list:
+    for c in UI_Elements.Counter.counter_list:
         # pg.draw.rect(WIN, ORANGE, pg.Rect(c.x, c.y, c.width, c.height)) #draw dimensions
         # UI_Elements.borderRect(c.x, c.y, c.width, c.height, 5).draw(
         #     WIN, (255, 255, 255), (0, 0, 0))
