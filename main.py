@@ -51,7 +51,7 @@ def main():
     counter_test = UI_Elements.Counter(20, 72, 64, 0, "High Goal", 32)
     dropdown_test = UI_Elements.Dropdown(
         20, 208, 256, 64, ["1", "two", "0011", "IV", "0x05"], "number", 32)
-    check_test = UI_Elements.Checkmark(200, 20, "yes?", 20, 'd')
+    check_test = UI_Elements.Checkmark(400, 20, "yes?", 64,)
     check_test.title_color = (255, 0, 0)
     check_test.box_thickness = 2
 

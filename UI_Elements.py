@@ -227,7 +227,7 @@ class Checkmark:
             self.box = BorderRect(
                 x, y + ((self.title_render.get_height() - size) / 2), size, size, self.box_thickness)
         elif self.check_placement == 'r':
-            self.box = BorderRect(x + self.title_render.get_width() + (size * 0.05), y + (
+            self.box = BorderRect(x + self.title_render.get_width() + (size * 0.2), y + (
                 (self.title_render.get_height() - size) / 2), size, size, self.box_thickness)
         self.box_color = (255, 255, 255)
         self.box_border_color = (0, 0, 0)
@@ -249,7 +249,7 @@ class Checkmark:
         elif self.check_placement == 'd':
             win.blit(self.title_render, (self.x, self.y))
         elif self.check_placement == 'l':
-            win.blit(self.title_render, (self.x + (self.size * 1.05), self.y))
+            win.blit(self.title_render, (self.x + (self.size * 1.2), self.y))
         elif self.check_placement == 'r':
             win.blit(self.title_render, (self.x, self.y))
 
