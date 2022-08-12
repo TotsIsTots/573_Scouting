@@ -1,4 +1,3 @@
-from turtle import width
 import pygame as pg
 import os
 import main
@@ -12,7 +11,7 @@ win = main.WIN
 class Counter:
     counter_list = []
 
-    def __init__(self, x: int, y: int, size: int, value: int = 0, title: str = "", title_size: int = 14):
+    def __init__(self, x: float, y: float, size: int, value: int = 0, title: str = "", title_size: int = 14):
         if title != "":
             self.title = title
             self.title_font = pg.font.SysFont('arial', title_size)
@@ -31,10 +30,10 @@ class Counter:
         self.value_render_x, self.value_render_y = size * 1.1 + \
             x, y - ((self.value_render.get_height() - size) / 2)
 
-        self.minus = pg.transform.scale(pg.image.load(
+        self.minus = pg.transform.smoothscale(pg.image.load(
             os.path.join('Assets', 'Minus.png')), (size, size))
         self.minus_rect = pg.Rect(x, y, size, size)
-        self.plus = pg.transform.scale(pg.image.load(
+        self.plus = pg.transform.smoothscale(pg.image.load(
             os.path.join('Assets', 'Plus.png')), (size, size))
         self.plus_rect = pg.Rect(
             x + (size * 1.2) + self.value_render.get_width(), y, size, size)
@@ -56,13 +55,14 @@ class Counter:
         win.blit(self.value_render, (self.value_render_x, self.value_render_y))
         win.blit(self.plus, (self.plus_rect.x, self.plus_rect.y))
 
-    def handleInput():
-        mouse_pos = pg.mouse.get_pos()
-        for c in Counter.counter_list:
-            if c.minus_rect.collidepoint(mouse_pos):
-                c.value -= 1
-            if c.plus_rect.collidepoint(mouse_pos):
-                c.value += 1
+    def handleInput(event):
+        if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+            mouse_pos = pg.mouse.get_pos()
+            for c in Counter.counter_list:
+                if c.minus_rect.collidepoint(mouse_pos):
+                    c.value -= 1
+                if c.plus_rect.collidepoint(mouse_pos):
+                    c.value += 1
 
     def update():
         for counter in Counter.counter_list:
@@ -86,7 +86,7 @@ class Counter:
 
 
 class BorderRect:
-    def __init__(self, x: int, y: int, width: int, height: int, thickness: int):
+    def __init__(self, x: float, y: float, width: float, height: float, thickness: float):
         self.x, self.y = x, y
         self.width, self.height = width, height
         self.thickness = thickness
@@ -101,7 +101,7 @@ class BorderRect:
 class Dropdown:
     dropdown_list = []
 
-    def __init__(self, x: int, y: int, width: int, height: int, options: list, title: str = "", title_size: int = 14):
+    def __init__(self, x: float, y: float, width: float, height: float, options: list, title: str = "", title_size: int = 14):
         self.x, self.y = x, y
         self.width, self.height = width, height
         self.options = options
@@ -122,7 +122,7 @@ class Dropdown:
             self.option_renders.append(
                 self.font.render(option, 1, self.font_color))
 
-        self.arrow = pg.transform.scale(pg.image.load(os.path.join('Assets', 'dropdown.png')), ((
+        self.arrow = pg.transform.smoothscale(pg.image.load(os.path.join('Assets', 'dropdown.png')), ((
             height - (self.border_thickness * 2)) // 2, height - (self.border_thickness * 2)))
 
         self.title = title
@@ -167,6 +167,24 @@ class Dropdown:
             win.blit(self.arrow, (self.x + self.width - self.border_thickness -
                      self.arrow.get_width(), self.y + self.border_thickness))
 
+    def handleInput(event):
+        if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+            mouse_pos = pg.mouse.get_pos()
+            for dropdown in Dropdown.dropdown_list:
+                if pg.Rect(dropdown.x, dropdown.y, dropdown.width, dropdown.height).collidepoint(mouse_pos):
+                    dropdown.opened = not dropdown.opened
+                if dropdown.opened:
+                    for i in range(1, len(dropdown.options) - (not not (dropdown.selected_num + 1)) + 1):
+                        if pg.Rect(dropdown.x, dropdown.y + (i * dropdown.height), dropdown.width, dropdown.height).collidepoint(mouse_pos):
+                            if dropdown.selected_num == -1:
+                                dropdown.selected_num = i - 1
+                            else:
+                                if i - 1 < dropdown.selected_num:
+                                    dropdown.selected_num = i-1
+                                else:
+                                    dropdown.selected_num = i
+                            dropdown.opened = not dropdown.opened
+
     def update():
         for dropdown in Dropdown.dropdown_list:
             if dropdown.selected_num == -1:
@@ -180,28 +198,11 @@ class Dropdown:
             dropdown.title_render = dropdown.title_render = dropdown.title_font.render(
                 dropdown.title, 1, dropdown.title_color)
 
-    def handleInput():
-        mouse_pos = pg.mouse.get_pos()
-        for dropdown in Dropdown.dropdown_list:
-            if pg.Rect(dropdown.x, dropdown.y, dropdown.width, dropdown.height).collidepoint(mouse_pos):
-                dropdown.opened = not dropdown.opened
-            if dropdown.opened:
-                for i in range(1, len(dropdown.options) - (not not (dropdown.selected_num + 1)) + 1):
-                    if pg.Rect(dropdown.x, dropdown.y + (i * dropdown.height), dropdown.width, dropdown.height).collidepoint(mouse_pos):
-                        if dropdown.selected_num == -1:
-                            dropdown.selected_num = i - 1
-                        else:
-                            if i - 1 < dropdown.selected_num:
-                                dropdown.selected_num = i-1
-                            else:
-                                dropdown.selected_num = i
-                        dropdown.opened = not dropdown.opened
-
 
 class Checkmark:
     checkmark_list = []
 
-    def __init__(self, x: int, y: int, title: str, size: int, check_placement: str = 'l'):
+    def __init__(self, x: float, y: float, title: str, size: int, check_placement: str = 'l'):
         assert check_placement in [
             'u', 'd', 'l', 'r'], 'check_placement parameter must be u, d, l, r'
         self.check_placement = check_placement
@@ -233,7 +234,7 @@ class Checkmark:
         self.box_border_color = (0, 0, 0)
 
         self.value = False
-        self.check = pg.transform.scale(pg.image.load(os.path.join(
+        self.check = pg.transform.smoothscale(pg.image.load(os.path.join(
             'Assets', 'check.png')), (size - (self.box_thickness * 2), size - (self.box_thickness * 2)))
 
         Checkmark.checkmark_list.append(self)
@@ -253,16 +254,191 @@ class Checkmark:
         elif self.check_placement == 'r':
             win.blit(self.title_render, (self.x, self.y))
 
-    def handleInput():
-        mouse_pos = pg.mouse.get_pos()
-        for c in Checkmark.checkmark_list:
-            if pg.Rect(c.box.x, c.box.y, c.size, c.size).collidepoint(mouse_pos):
-                c.value = not c.value
+    def handleInput(event):
+        if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+            mouse_pos = pg.mouse.get_pos()
+            for c in Checkmark.checkmark_list:
+                if pg.Rect(c.box.x, c.box.y, c.size, c.size).collidepoint(mouse_pos):
+                    c.value = not c.value
 
     def update():
         for c in Checkmark.checkmark_list:
             c.title_font = pg.font.SysFont('arial', c.size)
             c.title_render = c.title_font.render(c.title, 1, c.title_color)
             c.box.thickness = c.box_thickness
-            c.check = pg.transform.scale(
+            c.check = pg.transform.smoothscale(
                 c.check, (c.size - (c.box_thickness * 2), c.size - (c.box_thickness * 2)))
+
+
+class TextField:
+    textField_list = []
+
+    def __init__(self, x: float, y: float, width: float, height: float, text_size: int, border_thickness: float = 4, title: str = '', title_size: str = 14):
+        self.x, self.y = x, y
+        self.width, self.height = width, height
+
+        if title != '':
+            self.title = title
+            self.title_size = title_size
+            self.title_color = (0, 0, 0)
+            self.title_font = pg.font.SysFont('arial', title_size)
+            self.title_render = self.title_font.render(
+                title, 1, self.title_color)
+            self.title_x, self.title_y = x, y - (title_size * 1.1)
+
+        self.text_size = text_size
+        self.font_color = (0, 0, 0)
+        self.font = pg.font.SysFont('arial', text_size)
+        self.font_height = self.font.render(
+            '', 0, (0, 0, 0), (0, 0, 0)).get_height()
+        self.renders = []
+        self.content = ['']
+
+        self.border_thickness = border_thickness
+        self.box = BorderRect(x, y, width, height, border_thickness)
+        self.color = (255, 255, 255)
+        self.unselected_color = (128, 128, 128)
+        self.selected_color = (0, 0, 0)
+        self.selected = False
+
+        self.cursor_color = (0, 0, 0)
+        self.cursor_off_x, self.cursor_off_y = self.x + self.border_thickness + \
+            (self.text_size * 0.1), self.y + self.border_thickness + \
+            ((self.font_height - self.text_size) / 2)
+        self.cursor_x, self.cursor_y = self.cursor_off_x, self.cursor_off_y
+        self.cursor_ln = 0
+        self.cursor_col = 0
+
+        TextField.textField_list.append(self)
+
+    def get_string(self):
+        string = ''
+        for line in self.content:
+            string += line + '\n'
+        return string[:len(string) - 1]
+
+    def wrap(self):
+        if self.renders[self.cursor_ln].get_width() > self.width - (self.cursor_off_x - self.x) - self.border_thickness and self.content[self.cursor_ln].rfind(' ') != -1:
+            wrapped_ln = self.cursor_ln
+            self.content.insert(
+                self.cursor_ln + 1, self.content[self.cursor_ln][self.content[self.cursor_ln].rfind(' ') + 1:])
+            if self.cursor_col >= self.content[self.cursor_ln].rfind(' ') + 1:
+                self.cursor_ln += 1
+                self.cursor_y = self.cursor_ln * self.text_size + self.cursor_off_y
+                self.cursor_col -= len(
+                    self.content[wrapped_ln][:self.content[wrapped_ln].rfind(' ') + 1:])
+                self.cursor_x = self.font.render(self.content[self.cursor_ln][0:self.cursor_col], 0, (
+                    0, 0, 0), (0, 0, 0)).get_width() + self.cursor_off_x
+            self.content[wrapped_ln] = self.content[wrapped_ln][:self.content[wrapped_ln].rfind(
+                ' ') + 1:]
+
+    def draw(self):
+        if self.title != '':
+            win.blit(self.title_render, (self.title_x, self.title_y))
+
+        if self.selected:
+            self.box.draw(win, self.color, self.selected_color)
+        else:
+            self.box.draw(win, self.color, self.unselected_color)
+
+        line_num = 0
+        self.renders = []
+        for line in self.content:
+            font_render = self.font.render(line, 1, self.font_color)
+            self.renders.append(font_render)
+            win.blit(font_render, (self.x + self.border_thickness + (self.text_size * 0.1), self.y + self.border_thickness +
+                     (self.text_size * line_num)), pg.Rect(0, 0, self.width - (self.cursor_off_x - self.x) - self.border_thickness, self.font_height))
+            line_num += 1
+        self.wrap()
+
+        if self.selected:
+            pg.draw.line(win, self.cursor_color, (self.cursor_x, self.cursor_y),
+                         (self.cursor_x, self.cursor_y + self.text_size))
+
+    def handleInput(event):
+        # click detection
+        mouse_pos = pg.mouse.get_pos()
+        for t in TextField.textField_list:
+            if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+                if pg.Rect(t.box.x, t.box.y, t.box.width, t.box.height).collidepoint(mouse_pos):
+                    if not t.selected:
+                        t.selected = True
+                        t.cursor_x = t.renders[len(
+                            t.content) - 1].get_width() + t.x + t.border_thickness + (t.text_size * 0.1)
+                        t.cursor_y = t.y + t.border_thickness + \
+                            (t.text_size * (len(t.content) - 1)) + \
+                            ((t.font_height - t.text_size) / 2)
+                        t.cursor_ln = len(t.content) - 1
+                        t.cursor_col = len(t.content[len(t.content) - 1])
+                    else:
+                        t.selected = False
+                else:
+                    t.selected = False
+
+            if event.type == pg.KEYDOWN and t.selected:
+                # cursor movement
+                if event.key == pg.K_LEFT:
+                    t.cursor_col -= 1
+                    if t.cursor_col < 0:
+                        t.cursor_ln = max([0, t.cursor_ln - 1])
+                        t.cursor_col = len(t.content[t.cursor_ln])
+                        t.cursor_x, t.cursor_y = t.renders[t.cursor_ln].get_width(
+                        ) + t.cursor_off_x, t.cursor_ln * t.text_size + t.cursor_off_y
+                    else:
+                        t.cursor_x = t.font.render(
+                            t.content[t.cursor_ln][0:t.cursor_col], 0, (0, 0, 0), (0, 0, 0)).get_width() + t.cursor_off_x
+
+                if event.key == pg.K_RIGHT:
+                    t.cursor_col += 1
+                    if t.cursor_col > len(t.content[t.cursor_ln]):
+                        t.cursor_ln = min(
+                            [len(t.content) - 1, t.cursor_ln + 1])
+                        t.cursor_col = 0
+                        t.cursor_x, t.cursor_y = t.cursor_off_x, t.cursor_ln * t.text_size + t.cursor_off_y
+                    else:
+                        t.cursor_x = t.font.render(
+                            t.content[t.cursor_ln][0:t.cursor_col], 0, (0, 0, 0), (0, 0, 0)).get_width() + t.cursor_off_x
+
+                # text input
+                if event.key == pg.K_BACKSPACE:
+                    if (t.cursor_ln, t.cursor_col) != (0, 0):
+                        if t.cursor_col != 0:
+                            t.content[t.cursor_ln] = t.content[t.cursor_ln][0:t.cursor_col - 1:] + \
+                                t.content[t.cursor_ln][t.cursor_col::]
+                        t.cursor_col -= 1
+                        if t.cursor_col < 0:
+                            t.cursor_ln = max([0, t.cursor_ln - 1])
+                            t.cursor_col = len(t.content[t.cursor_ln])
+                            t.cursor_x, t.cursor_y = t.renders[t.cursor_ln].get_width(
+                            ) + t.cursor_off_x, t.cursor_ln * t.text_size + t.cursor_off_y
+                            t.content[t.cursor_ln] += t.content[t.cursor_ln + 1]
+                            t.content[t.cursor_ln + 1] = ''
+                            del(t.content[t.cursor_ln + 1])
+                        else:
+                            t.cursor_x = t.font.render(
+                                t.content[t.cursor_ln][0:t.cursor_col], 0, (0, 0, 0), (0, 0, 0)).get_width() + t.cursor_off_x
+                elif event.key == pg.K_RETURN:
+                    t.content.insert(t.cursor_ln + 1,
+                                     t.content[t.cursor_ln][t.cursor_col::])
+                    t.content[t.cursor_ln] = t.content[t.cursor_ln][0:t.cursor_col:]
+                    t.cursor_ln += 1
+                    t.cursor_col = 0
+                    t.cursor_x, t.cursor_y = t.cursor_off_x, t.cursor_ln * t.text_size + t.cursor_off_y
+                else:
+                    new = t.content[t.cursor_ln][:t.cursor_col] + \
+                        event.unicode + t.content[t.cursor_ln][t.cursor_col:]
+                    if new != t.content[t.cursor_ln]:
+                        t.content[t.cursor_ln] = new
+                        t.cursor_col += 1
+                        t.cursor_x = t.font.render(
+                            t.content[t.cursor_ln][0:t.cursor_col], 0, (0, 0, 0), (0, 0, 0)).get_width() + t.cursor_off_x
+
+    def update():
+        for t in TextField.textField_list:
+
+            t.box.height = max(
+                [t.height, t.border_thickness + t.text_size * (0.2 + len(t.content))])
+
+            if t.title != '':
+                t.title_render = t.title_font.render(
+                    t.title, 1, t.title_color)

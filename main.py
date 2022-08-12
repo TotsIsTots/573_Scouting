@@ -13,6 +13,10 @@ pg.display.set_caption("FRC Scouting")
 WHITE = (255, 255, 255)
 ORANGE = (255, 128, 0)
 
+
+def clear(): return os.system('cls')
+
+
 ARIAL = pg.font.SysFont('arial', 24)
 
 BACKGROUND = pg.image.load(os.path.join('Assets', 'background.png'))
@@ -28,32 +32,34 @@ def drawBackground(screen_w, screen_h):
 
 def drawDisplay(screen_w, screen_h):
     drawBackground(screen_w, screen_h)
-    for c in UI_Elements.Counter.counter_list:
-        # pg.draw.rect(WIN, ORANGE, pg.Rect(c.x, c.y, c.width, c.height)) #draw dimensions
-        # UI_Elements.borderRect(c.x, c.y, c.width, c.height, 5).draw(
-        #     WIN, (255, 255, 255), (0, 0, 0))
-        c.draw()
+    for counter in UI_Elements.Counter.counter_list:
+        counter.draw()
 
-    for d in UI_Elements.Dropdown.dropdown_list:
-        # pg.draw.rect(WIN, ORANGE, pg.Rect(c.x, c.y, c.width, c.height)) #draw dimensions
-        # UI_Elements.borderRect(c.x, c.y, c.width, c.height, 5).draw(
-        #     WIN, (255, 255, 255), (0, 0, 0))
-        d.draw()
+    for checkmark in UI_Elements.Checkmark.checkmark_list:
+        checkmark.draw()
 
-    for c in UI_Elements.Checkmark.checkmark_list:
-        c.draw()
+    for dropdown in UI_Elements.Dropdown.dropdown_list:
+        dropdown.draw()
 
-    pg.display.update()
+    for textField in UI_Elements.TextField.textField_list:
+        textField.draw()
+
+    pg.display.flip()
 
 
 def main():
     # define data input parameters here
     counter_test = UI_Elements.Counter(20, 72, 64, 0, "High Goal", 32)
+
     dropdown_test = UI_Elements.Dropdown(
         20, 208, 256, 64, ["1", "two", "0011", "IV", "0x05"], "number", 32)
-    check_test = UI_Elements.Checkmark(400, 20, "yes?", 64,)
+
+    check_test = UI_Elements.Checkmark(400, 20, "yes?", 64)
     check_test.title_color = (255, 0, 0)
     check_test.box_thickness = 2
+
+    text_field_test = UI_Elements.TextField(
+        400, 128, 256, 128, 24, title='test', title_size=24)
 
     run = True
     while run:
@@ -61,16 +67,17 @@ def main():
             if event.type == pg.QUIT:
                 run = False
 
-            if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
-                UI_Elements.Counter.handleInput()
-                UI_Elements.Dropdown.handleInput()
-                UI_Elements.Checkmark.handleInput()
+            UI_Elements.TextField.handleInput(event)
+            UI_Elements.Dropdown.handleInput(event)
+            UI_Elements.Checkmark.handleInput(event)
+            UI_Elements.Counter.handleInput(event)
 
         screen_w, screen_h = pg.display.get_surface().get_size()
 
         UI_Elements.Counter.update()
         UI_Elements.Dropdown.update()
         UI_Elements.Checkmark.update()
+        UI_Elements.TextField.update()
 
         drawDisplay(screen_w, screen_h)
 
