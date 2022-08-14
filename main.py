@@ -4,6 +4,10 @@ import pygame as pg
 import os
 import math
 
+icon = pg.transform.smoothscale(pg.image.load(
+    os.path.join('Assets', 'FRCLogo.png')), (32, 32))
+pg.display.set_icon(icon)
+
 screen_w, screen_h = 900, 500  # initial window dimensions
 WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
 pg.display.set_caption("FRC Scouting")
