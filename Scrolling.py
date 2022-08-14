@@ -58,19 +58,14 @@ def get_change(event):
 
 def drawScrollBar(thickness: float = 8):
     screen_w, screen_h = pg.display.get_surface().get_size()
-    bar = pg.Surface((thickness, screen_h))
-    bar.fill((150, 150, 150))
-    bar.set_alpha(160)
-    win.blit(bar, (screen_w - thickness, 0))
-
     if screen_h < display_height:
+        bar = pg.Surface((thickness, screen_h))
+        bar.fill((150, 150, 150))
+        bar.set_alpha(160)
+        win.blit(bar, (screen_w - thickness, 0))
+
         scroller = pg.Surface((thickness, screen_h ** 2 / display_height))
         scroller.fill((100, 100, 100))
         scroller.set_alpha(160)
         win.blit(scroller, (screen_w - thickness,
                  scroll_off * screen_h / display_height))
-    else:
-        scroller = pg.Surface((thickness, screen_h))
-        scroller.fill((100, 100, 100))
-        scroller.set_alpha(160)
-        win.blit(scroller, (screen_w - thickness, 0))
