@@ -4,8 +4,11 @@ import main
 
 pg.font.init()
 
-# define the window surface as the one used in main (in this case, 'WIN')
-win = main.WIN
+
+def init():
+    global win
+    # define the window surface as the one used in main (in this case, 'WIN')
+    win = main.WIN
 
 
 class Counter:
@@ -268,6 +271,14 @@ class Checkmark:
             c.box.thickness = c.box_thickness
             c.check = pg.transform.smoothscale(
                 c.check, (c.size - (c.box_thickness * 2), c.size - (c.box_thickness * 2)))
+            if c.check_placement == 'u':
+                c.box.y = c.y
+            elif c.check_placement == 'd':
+                c.box.y = c.y + c.title_render.get_height()
+            elif c.check_placement == 'l':
+                c.box.y = c.y + ((c.title_render.get_height() - c.size) / 2)
+            elif c.check_placement == 'r':
+                c.box.y = c.y + ((c.title_render.get_height() - c.size) / 2)
 
 
 class TextField:
@@ -311,7 +322,7 @@ class TextField:
 
         TextField.textField_list.append(self)
 
-    def get_string(self):
+    def get_string(self) -> str:
         string = ''
         for line in self.content:
             string += line + '\n'
@@ -440,5 +451,12 @@ class TextField:
                 [t.height, t.border_thickness + t.text_size * (0.2 + len(t.content))])
 
             if t.title != '':
+                t.title_y = t.y - (t.title_size * 1.1)
                 t.title_render = t.title_font.render(
                     t.title, 1, t.title_color)
+
+            t.box.y = t.y
+
+            t.cursor_off_y = t.y + t.border_thickness + \
+                ((t.font_height - t.text_size) / 2)
+            t.cursor_y = t.cursor_ln * t.text_size + t.cursor_off_y
