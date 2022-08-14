@@ -62,8 +62,8 @@ def drawDisplay(screen_w, screen_h):
 
 def main():
     Scrolling.init()
-    Scrolling.scroll_speed = 10
-    Scrolling.display_height = 600
+    Scrolling.scroll_speed = 10  # define your scrolling speed here
+    Scrolling.display_height = 600  # define how big the area to place inputs is
     UI_Elements.init()
 
     # define data input parameters here
