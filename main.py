@@ -1,42 +1,98 @@
-import UI_Elements
 import Scrolling
+import UI_Elements
+import QR
 import pygame as pg
 import os
 import math
+from datetime import date
 
+
+pg.font.init()
+
+WIN = pg.display.set_mode((800, 450))
+
+# icon can be any image file, just specify file name in below function
 icon = pg.transform.smoothscale(pg.image.load(
     os.path.join('Assets', 'FRCLogo.png')), (32, 32))
 pg.display.set_icon(icon)
 
-screen_w, screen_h = 900, 500  # initial window dimensions
-WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
-pg.display.set_caption("FRC Scouting")
-
-pg.font.init()
-
-
-def clear(): return os.system('cls')
-
-
-ARIAL = pg.font.SysFont('arial', 24)
-
+# background can be any image file, just specify file name in below function
 BACKGROUND = pg.image.load(os.path.join('Assets', 'background.png'))
-BACKGROUND_W = BACKGROUND.get_width()
-BACKGROUND_H = BACKGROUND.get_height()
+BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
+
+# initialize other scripts
+Scrolling.init()
+UI_Elements.init()
+
+
+def applySettings():
+    global BACKGROUND_W, BACKGROUND_H
+    WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
+    pg.display.set_caption(window_caption)
+    icon = pg.transform.smoothscale(pg.image.load(window_icon_path), (32, 32))
+    pg.display.set_icon(icon)
+    BACKGROUND = pg.image.load(background_path)
+    BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
+
+    global generate_rect, generate_render, reset_rect, reset_render
+    action_font = pg.font.SysFont('arial', action_buttons_size)
+    generate_render = action_font.render('Generate', 1, generate_text_color)
+    generate_rect = pg.Rect(
+        action_buttons_pos[0], action_buttons_pos[1], generate_render.get_width() * 1.1, action_buttons_size)
+    reset_render = action_font.render('Reset', 1, reset_text_color)
+    reset_rect = pg.Rect(
+        action_buttons_pos[0] + generate_render.get_width() * 1.2, action_buttons_pos[1], reset_render.get_width() * 1.1, action_buttons_size)
+
+
+def compileData(seperator: str = ';') -> str:
+    data = ''
+    for element in UI_Elements.list:
+        if type(element).__name__ == "Counter" or type(element).__name__ == "Checkmark":
+            data += str(element.value) + seperator
+        if type(element).__name__ == "Dropdown":
+            data += element.selected_str + seperator
+        if type(element).__name__ == "TextField":
+            data += element.get_string() + seperator
+    return data[:len(data) - len(seperator)]
+
+
+def reset():
+    for element in UI_Elements.list:
+        if type(element).__name__ == "Counter":
+            if element != match_number:
+                element.value = 0
+        if type(element).__name__ == "Checkmark":
+            element.value = False
+        if type(element).__name__ == "Dropdown":
+            element.selected_num = -1
+        if type(element).__name__ == "TextField":
+            element.content = ['']
 
 
 def handleScrolling(scroll_change):
+    for header in UI_Elements.Header.header_list:
+        header.y -= scroll_change
     for counter in UI_Elements.Counter.counter_list:
-        counter.y += scroll_change
-
+        counter.y -= scroll_change
     for checkmark in UI_Elements.Checkmark.checkmark_list:
-        checkmark.y += scroll_change
-
+        checkmark.y -= scroll_change
     for dropdown in UI_Elements.Dropdown.dropdown_list:
-        dropdown.y += scroll_change
-
+        dropdown.y -= scroll_change
     for textField in UI_Elements.TextField.textField_list:
-        textField.y += scroll_change
+        textField.y -= scroll_change
+
+    generate_rect.y -= scroll_change
+    reset_rect.y -= scroll_change
+
+
+def handleActionInputs(event):
+    if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+        mouse_pos = pg.mouse.get_pos()
+        if generate_rect.collidepoint(mouse_pos):
+            QR.saveAndShow(str(date.today()) + ' Match ' + str(match_number.value),
+                           compileData(), 256, (screen_w, screen_h))
+        if reset_rect.collidepoint(mouse_pos):
+            reset()
 
 
 def drawBackground(screen_w, screen_h):
@@ -47,17 +103,26 @@ def drawBackground(screen_w, screen_h):
 
 def drawDisplay(screen_w, screen_h):
     drawBackground(screen_w, screen_h)
+
     for counter in UI_Elements.Counter.counter_list:
         counter.draw()
-
     for checkmark in UI_Elements.Checkmark.checkmark_list:
         checkmark.draw()
-
     for dropdown in UI_Elements.Dropdown.dropdown_list:
         dropdown.draw()
-
     for textField in UI_Elements.TextField.textField_list:
         textField.draw()
+    for header in UI_Elements.Header.header_list:
+        header.draw()
+
+    pg.draw.rect(WIN, generate_button_color, generate_rect,
+                 border_radius=action_buttons_size // 5)
+    WIN.blit(generate_render, (generate_rect.x +
+             generate_render.get_width() * .05, generate_rect.y - ((generate_render.get_height() - action_buttons_size) / 2)))
+    pg.draw.rect(WIN, reset_button_color, reset_rect,
+                 border_radius=action_buttons_size // 5)
+    WIN.blit(reset_render, (reset_rect.x +
+             reset_render.get_width() * .05, reset_rect.y - ((reset_render.get_height() - action_buttons_size) / 2)))
 
     Scrolling.drawScrollBar()
 
@@ -65,24 +130,40 @@ def drawDisplay(screen_w, screen_h):
 
 
 def main():
-    Scrolling.init()
-    Scrolling.scroll_speed = 10  # define your scrolling speed here
-    Scrolling.display_height = 600  # define how big the area to place inputs is
-    UI_Elements.init()
+    global generate_button_color, generate_text_color, reset_button_color, reset_text_color, action_buttons_pos, action_buttons_size, screen_w, screen_h, window_caption, window_icon_path, background_path
 
-    # define data input parameters here
-    counter_test = UI_Elements.Counter(20, 72, 64, 0, "High Goal", 32)
+    # customize settings
+    Scrolling.scroll_speed = 10
+    Scrolling.display_height = 600  # scrollable height
+    screen_w, screen_h = 800, 450  # initial window dimensions
+    window_caption = "FRC Scouting"
+    window_icon_path = os.path.join('Assets', 'FRCLogo.png')
+    background_path = os.path.join('Assets', 'background.png')
+    action_buttons_pos = 350, 350  # position of "Generate" and "Reset" buttons
+    action_buttons_size = 50  # size of "Generate" and "Reset" buttons
+    generate_button_color = (0, 255, 0)
+    generate_text_color = (255, 255, 255)
+    reset_button_color = (255, 0, 0)
+    reset_text_color = (255, 255, 255)
 
-    dropdown_test = UI_Elements.Dropdown(
-        20, 208, 256, 64, ["1", "two", "0011", "IV", "0x05"], "number", 32)
+    applySettings()
 
-    check_test = UI_Elements.Checkmark(400, 20, "yes?", 64)
-    check_test.title_color = (255, 0, 0)
-    check_test.box_thickness = 2
+    # it is HIGHLY reccomended that this exists, but you can change parameters such as size, position etc. but DON'T CHANGE THE TITLE
+    global match_number
+    match_number = UI_Elements.Counter(20, 80, 64, 0, "Match number", 32)
 
-    text_field_test = UI_Elements.TextField(
-        400, 128, 256, 128, 24, title='test', title_size=24)
+    # Initialize data input objects and headers here, QR code lists data in order of initialization
+    header_example = UI_Elements.Header(32, 'Game time!', 24)
 
+    dropdown_example = UI_Elements.Dropdown(
+        20, 280, 256, 64, ["1", "two", "0011", "IV", "0x05"], "Number", 32)
+
+    check_example = UI_Elements.Checkmark(350, 50, "Water game?", 64)
+
+    text_field_example = UI_Elements.TextField(
+        350, 180, 256, 128, 24, title='Notes', title_size=24)
+
+    # main loop
     run = True
     while run:
         for event in pg.event.get():
@@ -94,10 +175,13 @@ def main():
             UI_Elements.Checkmark.handleInput(event)
             UI_Elements.Counter.handleInput(event)
 
+            handleActionInputs(event)
+
             handleScrolling(Scrolling.get_change(event))
 
         screen_w, screen_h = pg.display.get_surface().get_size()
 
+        UI_Elements.Header.update()
         UI_Elements.Counter.update()
         UI_Elements.Dropdown.update()
         UI_Elements.Checkmark.update()

@@ -1,14 +1,54 @@
+from turtle import color
 import pygame as pg
 import os
-import main
 
 pg.font.init()
 
 
 def init():
     global win
-    # define the window surface as the one used in main (in this case, 'WIN')
-    win = main.WIN
+    win = pg.display.get_surface()
+
+
+list = []
+
+
+class BorderRect:
+
+    def __init__(self, x: float, y: float, width: float, height: float, thickness: float):
+        self.x, self.y = x, y
+        self.width, self.height = width, height
+        self.thickness = thickness
+
+    def draw(self, surface: pg.Surface, color: tuple, border_color: tuple):
+        border = pg.Rect(self.x, self.y, self.width, self.height)
+        pg.draw.rect(surface, border_color, border)
+        pg.draw.rect(surface, color, pg.Rect(self.thickness + self.x, self.thickness + self.y,
+                     self.width - (self.thickness * 2), self.height - (self.thickness * 2)))
+
+
+class Header:
+    header_list = []
+
+    def __init__(self, y: float, title: str, size: int, thickness: float = 2, color: tuple = (100, 100, 100), bold: bool = True):
+        self.y = y
+        self.thickness = thickness
+        self.size = size
+        self.title = title
+        self.title_font = pg.font.SysFont('arial', size, bold)
+        self.title_render = self.title_font.render(title, 1, color)
+        self.color = color
+
+        Header.header_list.append(self)
+
+    def draw(self):
+        pg.draw.line(win, self.color, (10, self.y), (pg.display.get_surface(
+        ).get_width() - 10, self.y), self.thickness)
+        win.blit(self.title_render, (10, self.y - self.size))
+
+    def update():
+        for h in Header.header_list:
+            h.title_render = h.title_font.render(h.title, 1, h.color)
 
 
 class Counter:
@@ -48,6 +88,7 @@ class Counter:
         self.size = size
 
         Counter.counter_list.append(self)
+        list.append(self)
 
     def draw(self):
         if self.title != "":
@@ -88,19 +129,6 @@ class Counter:
                 counter.value_render.get_width()
 
 
-class BorderRect:
-    def __init__(self, x: float, y: float, width: float, height: float, thickness: float):
-        self.x, self.y = x, y
-        self.width, self.height = width, height
-        self.thickness = thickness
-
-    def draw(self, surface: pg.Surface, color: tuple, border_color: tuple):
-        border = pg.Rect(self.x, self.y, self.width, self.height)
-        pg.draw.rect(surface, border_color, border)
-        pg.draw.rect(surface, color, pg.Rect(self.thickness + self.x, self.thickness + self.y,
-                     self.width - (self.thickness * 2), self.height - (self.thickness * 2)))
-
-
 class Dropdown:
     dropdown_list = []
 
@@ -135,6 +163,7 @@ class Dropdown:
         self.title_render = self.title_font.render(title, 1, self.title_color)
 
         Dropdown.dropdown_list.append(self)
+        list.append(self)
 
     def draw(self):
         if self.title != "":
@@ -241,6 +270,7 @@ class Checkmark:
             'Assets', 'check.png')), (size - (self.box_thickness * 2), size - (self.box_thickness * 2)))
 
         Checkmark.checkmark_list.append(self)
+        list.append(self)
 
     def draw(self):
         self.box.draw(win, self.box_color, self.box_border_color)
@@ -321,6 +351,7 @@ class TextField:
         self.cursor_col = 0
 
         TextField.textField_list.append(self)
+        list.append(self)
 
     def get_string(self) -> str:
         string = ''
@@ -424,7 +455,7 @@ class TextField:
                             ) + t.cursor_off_x, t.cursor_ln * t.text_size + t.cursor_off_y
                             t.content[t.cursor_ln] += t.content[t.cursor_ln + 1]
                             t.content[t.cursor_ln + 1] = ''
-                            del(t.content[t.cursor_ln + 1])
+                            del (t.content[t.cursor_ln + 1])
                         else:
                             t.cursor_x = t.font.render(
                                 t.content[t.cursor_ln][0:t.cursor_col], 0, (0, 0, 0), (0, 0, 0)).get_width() + t.cursor_off_x

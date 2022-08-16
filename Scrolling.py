@@ -1,10 +1,6 @@
 import dis
 from platform import win32_edition
 import pygame as pg
-import main
-
-# define the window surface as the one used in main (in this case, 'WIN')
-
 
 scroll_off = 0
 scroll_change = 0
@@ -15,8 +11,7 @@ display_height = 1000
 
 def init():
     global win
-    # define the window surface as the one used in main (in this case, 'WIN')
-    win = main.WIN
+    win = pg.display.get_surface()
 
 
 def get_off(event) -> float:
@@ -36,23 +31,10 @@ def get_off(event) -> float:
     return scroll_off
 
 
-def get_change(event):
+def get_change(event) -> float:
     global scroll_change
-    global scroll_off
-    global scroll_speed
     old_scroll_off = scroll_off
-    screen_h = pg.display.get_surface().get_size()[1]
-    if event.type == pg.MOUSEBUTTONDOWN and screen_h < display_height:
-        if event.button == 4:
-            scroll_off -= scroll_speed
-            if scroll_off < 0:
-                scroll_off = 0
-        if event.button == 5:
-            scroll_off += scroll_speed
-            if scroll_off > display_height - screen_h:
-                scroll_off = display_height - screen_h
-    scroll_off = float(scroll_off)
-    scroll_change = float(scroll_off - old_scroll_off)
+    scroll_change = float(get_off(event) - old_scroll_off)
     return scroll_change
 
 
