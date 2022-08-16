@@ -1,5 +1,3 @@
-import dis
-from platform import win32_edition
 import pygame as pg
 
 scroll_off = 0
