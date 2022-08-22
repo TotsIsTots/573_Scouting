@@ -1,4 +1,3 @@
-from turtle import width
 import Scrolling
 import UI_Elements
 import QR
