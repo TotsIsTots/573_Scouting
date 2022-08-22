@@ -135,7 +135,7 @@ def main():
 
     # customize settings
     Scrolling.scroll_speed = 10
-    Scrolling.display_height = 600  # scrollable height
+    Scrolling.display_height = 700  # scrollable height
     screen_w, screen_h = 800, 450  # initial window dimensions
     window_caption = "FRC Scouting"
     window_icon_path = os.path.join('Assets', 'FRCLogo.png')
