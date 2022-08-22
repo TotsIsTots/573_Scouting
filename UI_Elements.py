@@ -54,8 +54,8 @@ class Counter:
     counter_list = []
 
     def __init__(self, x: float, y: float, size: int, value: int = 0, title: str = "", title_size: int = 14):
+        self.title = title
         if title != "":
-            self.title = title
             self.title_font = pg.font.SysFont('arial', title_size)
             # title font color must be changed manualy through assignment, not included in function
             self.title_font_color = (16, 16, 16)
@@ -140,7 +140,7 @@ class Dropdown:
         self.opened = False
 
         self.border_thickness = 4
-        self.inner_border_thickness = self.border_thickness // 2
+        self.inner_border_thickness = 2
         self.border_color = (0, 0, 0)
         self.background_color = (255, 255, 255)
 
@@ -239,7 +239,6 @@ class Checkmark:
         self.check_placement = check_placement
 
         self.x, self.y = x, y
-        self.size = size
 
         self.title = title
         self.title_color = (0, 0, 0)
@@ -317,8 +316,8 @@ class TextField:
         self.x, self.y = x, y
         self.width, self.height = width, height
 
+        self.title = title
         if title != '':
-            self.title = title
             self.title_size = title_size
             self.title_color = (0, 0, 0)
             self.title_font = pg.font.SysFont('arial', title_size)
