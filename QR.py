@@ -6,8 +6,10 @@ pg.font.init()
 
 
 def saveAndShow(name: str, data: str, size: float, original_display_size: tuple):
+    # sets display original size
     display = pg.display.set_mode((size, size))
 
+    # creates QR code
     img = qrcode.make(data)
     img.save(os.path.join('QR Codes', name + '.png'))
     img = pg.transform.scale(pg.image.load(
@@ -15,6 +17,7 @@ def saveAndShow(name: str, data: str, size: float, original_display_size: tuple)
 
     arial = pg.font.SysFont('arial', size // 16)
 
+    # displays QR code until user clicks
     showing = True
     while showing:
         for event in pg.event.get():
@@ -29,4 +32,5 @@ def saveAndShow(name: str, data: str, size: float, original_display_size: tuple)
                      (0, 0, 0), (255, 255, 255)), (size // 64, 0))
         pg.display.flip()
 
+    # sets display to original size
     pg.display.set_mode(original_display_size, pg.RESIZABLE)

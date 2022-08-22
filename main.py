@@ -174,17 +174,21 @@ def main():
             if event.type == pg.QUIT:
                 run = False
 
+            # handles input for UI elements
             UI_Elements.TextField.handleInput(event)
             UI_Elements.Dropdown.handleInput(event)
             UI_Elements.Checkmark.handleInput(event)
             UI_Elements.Counter.handleInput(event)
 
+            # Generate and Reset buttons
             handleActionInputs(event)
 
+            # handles scrolling from scroll offset
             handleScrolling(Scrolling.get_change(event))
 
         screen_w, screen_h = pg.display.get_surface().get_size()
 
+        # updates UI elements
         UI_Elements.Header.update()
         UI_Elements.Counter.update()
         UI_Elements.Dropdown.update()
