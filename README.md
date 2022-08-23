@@ -4,7 +4,7 @@ This repository serves as a template for making data input fields for scouting i
 
 ## Installation and Running
 Python is required for running. If it is not already installed, you can download and install it from [here](https://www.python.org/downloads/). When installing, make sure to select "Add Python 3.xx to PATH" when prompted.
-Running this requires the modules pygame, qrcode, and PIL to be installed you can install them with this commands, from your command line:
+Running this requires the modules pygame, qrcode, and PIL to be installed. You can install them with this command, from your command line:
 `pip install pygame qrcode PIL`
 
 When these modules are installed, clone this repository and run "main.py". Every time a QR Code is generated, it will be saved to the "QR Codes" folder with the date, match number, and team number selected.
