@@ -3,6 +3,7 @@
 This repository serves as a template for making data input fields for scouting in FRC competitions. It is scripted using python and uses the pygame GUI module.
 
 ## Installation and Running
+Python is required for running. If it is not already installed, you can download and install it from [here](https://www.python.org/downloads/). When installing, make sure to select "Add Python 3.xx to PATH" when prompted.
 Running this requires the modules pygame, qrcode, and PIL to be installed you can install them with these commands, from your command line:
 `pip install pygame`
 `pip install qrcode`
