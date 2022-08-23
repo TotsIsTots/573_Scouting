@@ -11,25 +11,16 @@ pg.font.init()
 
 WIN = pg.display.set_mode((800, 450))
 
-# icon can be any image file, just specify file name in below function
-icon = pg.transform.smoothscale(pg.image.load(
-    os.path.join('Assets', 'FRCLogo.png')), (32, 32))
-pg.display.set_icon(icon)
-
-# background can be any image file, just specify file name in below function
-BACKGROUND = pg.image.load(os.path.join('Assets', 'background.png'))
-BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
-
 # initialize other scripts
 Scrolling.init()
 UI_Elements.init()
 
 
 def applySettings():
-    global BACKGROUND_W, BACKGROUND_H
+    global WIN, BACKGROUND, BACKGROUND_W, BACKGROUND_H
     WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
     pg.display.set_caption(window_caption)
-    icon = pg.transform.smoothscale(pg.image.load(window_icon_path), (32, 32))
+    icon = pg.image.load(window_icon_path)
     pg.display.set_icon(icon)
     BACKGROUND = pg.image.load(background_path)
     BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
@@ -137,7 +128,7 @@ def main():
     Scrolling.display_height = 700  # scrollable height
     screen_w, screen_h = 800, 450  # initial window dimensions
     window_caption = "FRC Scouting"
-    window_icon_path = os.path.join('Assets', 'FRCLogo.png')
+    window_icon_path = os.path.join('Assets', 'icon.png')
     background_path = os.path.join('Assets', 'background.png')
     action_buttons_pos = 350, 350  # position of "Generate" and "Reset" buttons
     action_buttons_size = 50  # size of "Generate" and "Reset" buttons
