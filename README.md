@@ -168,7 +168,8 @@ When called on a TextField object, it will return a single string of the compile
 ## Field Initialization
 Examples of initialization can be found in the main function.
 ```
-# Initialize data input objects and headers here, QR code lists data in order of initialization
+[...]
+    # Initialize data input objects and headers here, QR code lists data in order of initialization
     header_example = UI_Elements.Header(32, 'Game time!', 24)
 
     dropdown_example = UI_Elements.Dropdown(
@@ -178,5 +179,6 @@ Examples of initialization can be found in the main function.
 
     text_field_example = UI_Elements.TextField(
         350, 180, 256, 128, 24, title='Notes', title_size=24)
+[...]
 ```
 Indents under examples are just formatting and are not required, it can all be on one line.
