@@ -6,7 +6,6 @@ pg.font.init()
 
 
 def saveAndShow(name: str, data: str, size: float, original_display_size: tuple, save_path: str):
-    # sets display original size
     display = pg.display.set_mode((size, size))
 
     # creates QR code
