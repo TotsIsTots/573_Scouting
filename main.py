@@ -2,7 +2,6 @@ import Scrolling
 import UI_Elements
 import QR
 import pygame as pg
-import os
 import math
 from datetime import date
 import configparser
