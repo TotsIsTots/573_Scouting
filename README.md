@@ -12,7 +12,6 @@ When these modules are installed, clone this repository and run "main.py". Every
 ## Settings
 The settings are stored in the "config.ini" file. It looks like this inside:
 ```
-[...]
 [Scrolling]
 # Scrolling speed per scroll increment (in pixels)
 scroll_speed = 10
@@ -41,7 +40,13 @@ generate_button_color = 0, 255, 0
 generate_text_color = 255, 255, 255
 reset_button_color = 255, 0, 0
 reset_text_color = 255, 255, 255
-[...]
+
+[QRCodes]
+# size of the qr code in pixels
+display_size = 256
+
+#save location for qr codes
+save_path = QR Codes
 ```
 To change any values, open the file in a text editor and replace the default values with the new ones you want.
 
