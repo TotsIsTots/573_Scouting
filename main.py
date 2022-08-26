@@ -27,7 +27,7 @@ def main():
         350, 180, 256, 128, 24, title='Notes', title_size=24)
 
     #!!!=== All code below this line is for drawing the display, handling inputs, generating QR codes, etc. ===!!!
-    #!!!=== It is not reccomended to change anything below this line.                                       ===!!!
+    #!!!===                 It is not reccomended to change anything below this line.                       ===!!!
 
     # main loop
     run = True
