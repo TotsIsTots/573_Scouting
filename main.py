@@ -5,6 +5,7 @@ import pygame as pg
 import os
 import math
 from datetime import date
+import configparser
 
 
 pg.font.init()
@@ -15,24 +16,48 @@ WIN = pg.display.set_mode((800, 450))
 Scrolling.init()
 UI_Elements.init()
 
+# load settings from config file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-def applySettings():
-    global WIN, BACKGROUND, BACKGROUND_W, BACKGROUND_H
-    WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
-    pg.display.set_caption(window_caption)
-    icon = pg.image.load(window_icon_path)
-    pg.display.set_icon(icon)
-    BACKGROUND = pg.image.load(background_path)
-    BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
+Scrolling.scroll_speed = int(config['Scrolling']['scroll_speed'])
+Scrolling.display_height = int(config['Scrolling']['display_height'])
 
-    global generate_rect, generate_render, reset_rect, reset_render
-    action_font = pg.font.SysFont('arial', action_buttons_size)
-    generate_render = action_font.render('Generate', 1, generate_text_color)
-    generate_rect = pg.Rect(
-        action_buttons_pos[0], action_buttons_pos[1], generate_render.get_width() * 1.1, action_buttons_size)
-    reset_render = action_font.render('Reset', 1, reset_text_color)
-    reset_rect = pg.Rect(
-        action_buttons_pos[0] + generate_render.get_width() * 1.2, action_buttons_pos[1], reset_render.get_width() * 1.1, action_buttons_size)
+screen_w = int(config['Window']['screen_w'])
+screen_h = int(config['Window']['screen_h'])
+window_caption = config['Window']['window_caption']
+window_icon_path = config['Window']['window_icon_path']
+background_path = config['Window']['background_path']
+
+action_buttons_pos = tuple(
+    map(int, config['ActionButtons']['action_buttons_pos'].split(',')))
+action_buttons_size = int(config['ActionButtons']['action_buttons_size'])
+generate_button_color = tuple(
+    map(int, config['ActionButtons']['generate_button_color'].split(',')))
+generate_text_color = tuple(
+    map(int, config['ActionButtons']['generate_text_color'].split(',')))
+reset_button_color = tuple(
+    map(int, config['ActionButtons']['reset_button_color'].split(',')))
+reset_text_color = tuple(
+    map(int, config['ActionButtons']['reset_text_color'].split(',')))
+
+QR_display_size = int(config['QRCodes']['display_size'])
+QR_save_path = config['QRCodes']['save_path']
+
+WIN = pg.display.set_mode((screen_w, screen_h), pg.RESIZABLE)
+pg.display.set_caption(window_caption)
+icon = pg.image.load(window_icon_path)
+pg.display.set_icon(icon)
+BACKGROUND = pg.image.load(background_path)
+BACKGROUND_W, BACKGROUND_H = BACKGROUND.get_size()
+
+action_font = pg.font.SysFont('arial', action_buttons_size)
+generate_render = action_font.render('Generate', 1, generate_text_color)
+generate_rect = pg.Rect(
+    action_buttons_pos[0], action_buttons_pos[1], generate_render.get_width() * 1.1, action_buttons_size)
+reset_render = action_font.render('Reset', 1, reset_text_color)
+reset_rect = pg.Rect(
+    action_buttons_pos[0] + generate_render.get_width() * 1.2, action_buttons_pos[1], reset_render.get_width() * 1.1, action_buttons_size)
 
 
 def compileData(seperator: str = ';') -> str:
@@ -81,7 +106,7 @@ def handleActionInputs(event):
         mouse_pos = pg.mouse.get_pos()
         if generate_rect.collidepoint(mouse_pos):
             QR.saveAndShow(str(date.today()) + '_Match_' + str(match_number.value) +
-                           '_Team_' + team_number.content[0], compileData(), 256, (screen_w, screen_h))
+                           '_Team_' + team_number.content[0], compileData(), QR_display_size, (screen_w, screen_h), QR_save_path)
         if reset_rect.collidepoint(mouse_pos):
             reset()
 
@@ -121,24 +146,6 @@ def drawDisplay(screen_w, screen_h):
 
 
 def main():
-    global generate_button_color, generate_text_color, reset_button_color, reset_text_color, action_buttons_pos, action_buttons_size, screen_w, screen_h, window_caption, window_icon_path, background_path
-
-    # customize settings
-    Scrolling.scroll_speed = 10
-    Scrolling.display_height = 700  # scrollable height
-    screen_w, screen_h = 800, 450  # initial window dimensions
-    window_caption = "FRC Scouting"
-    window_icon_path = os.path.join('Assets', 'icon.png')
-    background_path = os.path.join('Assets', 'background.png')
-    action_buttons_pos = 350, 350  # position of "Generate" and "Reset" buttons
-    action_buttons_size = 50  # size of "Generate" and "Reset" buttons
-    generate_button_color = (0, 255, 0)
-    generate_text_color = (255, 255, 255)
-    reset_button_color = (255, 0, 0)
-    reset_text_color = (255, 255, 255)
-
-    applySettings()
-
     # it is HIGHLY reccomended that these exist, but you can change parameters such as size, position etc.
     global match_number, team_number
     match_number = UI_Elements.Counter(

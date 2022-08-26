@@ -5,15 +5,15 @@ import os
 pg.font.init()
 
 
-def saveAndShow(name: str, data: str, size: float, original_display_size: tuple):
+def saveAndShow(name: str, data: str, size: float, original_display_size: tuple, save_path: str):
     # sets display original size
     display = pg.display.set_mode((size, size))
 
     # creates QR code
     img = qrcode.make(data)
-    img.save(os.path.join('QR Codes', name + '.png'))
+    img.save(os.path.join(save_path, name + '.png'))
     img = pg.transform.scale(pg.image.load(
-        os.path.join('QR Codes', name + '.png')), (size, size))
+        os.path.join(save_path, name + '.png')), (size, size))
 
     arial = pg.font.SysFont('arial', size // 16)
 

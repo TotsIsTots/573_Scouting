@@ -10,24 +10,41 @@ Running this requires the modules pygame, qrcode, and Image to be installed. You
 When these modules are installed, clone this repository and run "main.py". Every time a QR Code is generated, it will be saved to the "QR Codes" folder with the date, match number, and team number selected.
 
 ## Settings
-In the main function, there is an area of code for customizable settings. Most are self explanatory or are explained in the code, here:
+The settings are stored in the "config.ini" file. It looks like this inside:
 ```
 [...]
-    # customize settings
-    Scrolling.scroll_speed = 10
-    Scrolling.display_height = 600  # scrollable height
-    screen_w, screen_h = 800, 450  # initial window dimensions
-    window_caption = "FRC Scouting"
-    window_icon_path = os.path.join('Assets', 'FRCLogo.png')
-    background_path = os.path.join('Assets', 'background.png')
-    action_buttons_pos = 350, 350  # position of "Generate" and "Reset" buttons
-    action_buttons_size = 50  # size of "Generate" and "Reset" buttons
-    generate_button_color = (0, 255, 0)
-    generate_text_color = (255, 255, 255)
-    reset_button_color = (255, 0, 0)
-    reset_text_color = (255, 255, 255)
+[Scrolling]
+# Scrolling speed per scroll increment (in pixels)
+scroll_speed = 10
+
+# scrollable height in pixels
+display_height = 700  
+
+[Window]
+# window size in pixels
+screen_w = 800 
+screen_h = 450
+
+window_caption = FRC Scouting
+window_icon_path = Assets/icon.png
+background_path = Assets/background.png
+
+[ActionButtons]
+# position of "Generate" and "Reset" buttons in pixels
+action_buttons_pos = 350, 350
+
+# size of "Generate" and "Reset" buttons in pixels
+action_buttons_size = 50
+
+#rgb values for the "Generate" and "Reset" buttons
+generate_button_color = 0, 255, 0
+generate_text_color = 255, 255, 255
+reset_button_color = 255, 0, 0
+reset_text_color = 255, 255, 255
 [...]
 ```
+To change any values, open the file in a text editor and replace the default values with the new ones you want.
+
 ## Fields
 Every input field has values that can be changed at and/or after initialization. They are listed here with their variable types. if there is an "=" after a value, it is optional and a default value is listed. Obviously, a value defined at initialization is already defined for after initialization. Each has methods, all include an update(), draw(self), and handleInput() methods which are already handled in the code and will not be listed here. The TextField object has a special method listed below.
 
