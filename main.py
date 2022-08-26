@@ -26,8 +26,8 @@ def main():
     text_field_example = UI_Elements.TextField(
         350, 180, 256, 128, 24, title='Notes', title_size=24)
 
-    # All code below this line is for drawing the display, handling inputs, generating QR codes, etc.
-    # It is not reccomended to change anything below this line.
+    #!!!=== All code below this line is for drawing the display, handling inputs, generating QR codes, etc. ===!!!
+    #!!!=== It is not reccomended to change anything below this line.                                       ===!!!
 
     # main loop
     run = True
