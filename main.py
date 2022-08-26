@@ -8,6 +8,59 @@ from datetime import date
 import configparser
 
 
+def main():
+    # it is HIGHLY reccomended that these exist, but you can change parameters such as size, position etc.
+    global match_number, team_number
+    match_number = UI_Elements.Counter(
+        20, 80, 64, 1, "Match number", 32)
+    team_number = UI_Elements.TextField(
+        20, 200, 128, 32, 30, title='Team Number', title_size=32)
+
+    # Initialize data input objects and headers here, QR code lists data in order of initialization
+    header_example = UI_Elements.Header(32, 'Game time!', 24)
+
+    dropdown_example = UI_Elements.Dropdown(
+        20, 300, 256, 64, ["1", "two", "0011", "IV", "0x05"], "Number", 32)
+
+    check_example = UI_Elements.Checkmark(350, 50, "Water game?", 64)
+
+    text_field_example = UI_Elements.TextField(
+        350, 180, 256, 128, 24, title='Notes', title_size=24)
+
+    # All code below this line is for drawing the display, handling inputs, generating QR codes, etc.
+    # It is not reccomended to change anything below this line.
+
+    # main loop
+    run = True
+    while run:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                run = False
+
+            # handles input for UI elements
+            UI_Elements.TextField.handleInput(event)
+            UI_Elements.Dropdown.handleInput(event)
+            UI_Elements.Checkmark.handleInput(event)
+            UI_Elements.Counter.handleInput(event)
+
+            # Generate and Reset buttons
+            handleActionInputs(event)
+
+            # handles scrolling from scroll offset
+            handleScrolling(Scrolling.get_change(event))
+
+        screen_w, screen_h = pg.display.get_surface().get_size()
+
+        # updates UI elements
+        UI_Elements.Header.update()
+        UI_Elements.Counter.update()
+        UI_Elements.Dropdown.update()
+        UI_Elements.Checkmark.update()
+        UI_Elements.TextField.update()
+
+        drawDisplay(screen_w, screen_h)
+
+
 pg.font.init()
 
 WIN = pg.display.set_mode((800, 450))
@@ -143,56 +196,6 @@ def drawDisplay(screen_w, screen_h):
     Scrolling.drawScrollBar()
 
     pg.display.flip()
-
-
-def main():
-    # it is HIGHLY reccomended that these exist, but you can change parameters such as size, position etc.
-    global match_number, team_number
-    match_number = UI_Elements.Counter(
-        20, 80, 64, 1, "Match number", 32)
-    team_number = UI_Elements.TextField(
-        20, 200, 128, 32, 30, title='Team Number', title_size=32)
-
-    # Initialize data input objects and headers here, QR code lists data in order of initialization
-    header_example = UI_Elements.Header(32, 'Game time!', 24)
-
-    dropdown_example = UI_Elements.Dropdown(
-        20, 300, 256, 64, ["1", "two", "0011", "IV", "0x05"], "Number", 32)
-
-    check_example = UI_Elements.Checkmark(350, 50, "Water game?", 64)
-
-    text_field_example = UI_Elements.TextField(
-        350, 180, 256, 128, 24, title='Notes', title_size=24)
-
-    # main loop
-    run = True
-    while run:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                run = False
-
-            # handles input for UI elements
-            UI_Elements.TextField.handleInput(event)
-            UI_Elements.Dropdown.handleInput(event)
-            UI_Elements.Checkmark.handleInput(event)
-            UI_Elements.Counter.handleInput(event)
-
-            # Generate and Reset buttons
-            handleActionInputs(event)
-
-            # handles scrolling from scroll offset
-            handleScrolling(Scrolling.get_change(event))
-
-        screen_w, screen_h = pg.display.get_surface().get_size()
-
-        # updates UI elements
-        UI_Elements.Header.update()
-        UI_Elements.Counter.update()
-        UI_Elements.Dropdown.update()
-        UI_Elements.Checkmark.update()
-        UI_Elements.TextField.update()
-
-        drawDisplay(screen_w, screen_h)
 
 
 if __name__ == '__main__':
