@@ -2,6 +2,8 @@
 ---
 This repository serves as a template for making data input fields for scouting in FRC competitions. It is scripted using python and uses the pygame GUI module.
 
+Data from the QR codes can be handled however it is needed, but we are working on an android app solution to do this for you, putting the data in a .csv file. It can be found [here](https://github.com/PIPIPIG233666/scouting_app) (work in progress).
+
 ## Installation and Running
 Python is required for running. If it is not already installed, you can download and install it from [here](https://www.python.org/downloads/). When installing, make sure to select "Add Python 3.xx to PATH" when prompted.
 Running this requires the modules pygame, qrcode, and Pillow to be installed. You can install them with this command, from your command line:
