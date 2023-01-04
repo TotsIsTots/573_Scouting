@@ -112,7 +112,7 @@ reset_rect = pg.Rect(
     action_buttons_pos[0] + generate_render.get_width() * 1.2, action_buttons_pos[1], reset_render.get_width() * 1.1, action_buttons_size)
 
 
-def compileData(seperator: str = ';') -> str:
+def compileData(seperator: str = ',') -> str:
     data = ''
     for element in UI_Elements.list:
         if type(element).__name__ == "Counter" or type(element).__name__ == "Checkmark":
