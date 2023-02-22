@@ -64,7 +64,7 @@ To automattically present the team numbers for the current match in your event, 
 This is would it would look like for the 2022 Michigan Escanaba event, shown [here](https://www.thebluealliance.com/event/2022miesc).
 
 ### Automatically
-Alternitively, you can run "teamfinder.py" with an internet connection. When running, it will prompt you for an event code. This is the code that is used in the URL for the event on The Blue Alliance. For example, the event code for the 2022 Michigan Escanaba event is "2022miesc". You can find the event code by going to the event on The Blue Alliance and copying the last part of the URL. It will look something like this: "https://www.thebluealliance.com/event/2022miesc". The event code is the part after the last "/". In this case, it is "2022miesc". It will then copy the matches to your clipboard, so you can paste it into the config file.
+Alternitively, you can run "teamfinder.py" with an internet connection. When running, it will prompt you for an event code. This is the code that is used in the URL for the event on The Blue Alliance. For example, the event code for the 2022 Michigan Escanaba event is "2022miesc". You can find the event code by going to the event on The Blue Alliance and copying the last part of the URL. It will look something like this: "https://www.thebluealliance.com/event/2022miesc". The event code is the part after the last "/". In this case, it is "2022miesc". It will then copy the formatted qualification matches to your clipboard, so you can paste it into the config file.
 
 
 ## Input Fields
