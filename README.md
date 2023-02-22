@@ -28,7 +28,7 @@ display_height = 700
 [Window]
 # window size in pixels
 screen_w = 800 
-screen_h = 450
+screen_h = 600
 
 window_caption = FRC Scouting
 window_icon_path = Assets/icon.png
