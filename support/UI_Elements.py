@@ -548,3 +548,83 @@ class TextField:
             t.cursor_off_y = t.y + t.border_thickness + \
                 ((t.font_height - t.text_size) / 2)
             t.cursor_y = t.cursor_ln * t.text_size + t.cursor_off_y
+
+
+class TeamColorToggle:
+    def __init__(self, x: float, y: float, title: str, size: int, box_placement: str = 'l'):
+        # constrains box placement to 'u', 'd', 'l', or 'r'
+        assert box_placement in [
+            'u', 'd', 'l', 'r'], 'check_placement parameter must be u, d, l, r'
+        self.box_placement = box_placement
+
+        # defines checkmark dimensions
+        self.x, self.y = x, y
+        self.size = size
+
+        # defines title values
+        self.title = title
+        self.title_color = (0, 0, 0)
+        self.title_font = pg.font.SysFont('arial', size)
+        self.title_render = self.title_font.render(title, 1, self.title_color)
+
+        # calculates checkbox placement
+        self.box_thickness = 4
+        self.box_placement = box_placement
+        if self.box_placement == 'u':
+            self.box = BorderRect(
+                x + (self.title_render.get_width() / 2) - (size / 2), y, size, size, self.box_thickness)
+        elif self.box_placement == 'd':
+            self.box = BorderRect(x + (self.title_render.get_width() / 2) - (size / 2), y +
+                                  self.title_render.get_height(), size, size, self.box_thickness)
+        elif self.box_placement == 'l':
+            self.box = BorderRect(
+                x, y + ((self.title_render.get_height() - size) / 2), size, size, self.box_thickness)
+        elif self.box_placement == 'r':
+            self.box = BorderRect(x + self.title_render.get_width() + (size * 0.2), y + (
+                (self.title_render.get_height() - size) / 2), size, size, self.box_thickness)
+        self.box_color = (255, 0, 0)
+        self.box_border_color = (0, 0, 0)
+
+        self.value = 'red'
+
+        list.append(self)
+
+    def draw(self):
+        # draws checkbox
+        self.box.draw(win, self.box_color, self.box_border_color)
+
+        # calculates title placement and draws it
+        if self.box_placement == 'u':
+            win.blit(self.title_render, (self.x, self.y + self.size))
+        elif self.box_placement == 'd':
+            win.blit(self.title_render, (self.x, self.y))
+        elif self.box_placement == 'l':
+            win.blit(self.title_render, (self.x + (self.size * 1.2), self.y))
+        elif self.box_placement == 'r':
+            win.blit(self.title_render, (self.x, self.y))
+
+    def handleInput(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0]:
+            mouse_pos = pg.mouse.get_pos()
+            if pg.Rect(self.box.x, self.box.y, self.size, self.size).collidepoint(mouse_pos):
+                if self.value == 'red':
+                    self.value = 'blue'
+                    self.box_color = (0, 0, 255)
+                else:
+                    self.value = 'red'
+                    self.box_color = (255, 0, 0)
+
+    def update(self):
+        self.title_font = pg.font.SysFont('arial', self.size)
+        self.title_render = self.title_font.render(self.title, 1, self.title_color)
+        self.box.thickness = self.box_thickness
+
+        # updates y values (for scrolling)
+        if self.box_placement == 'u':
+            self.box.y = self.y
+        elif self.box_placement == 'd':
+            self.box.y = self.y + self.title_render.get_height()
+        elif self.box_placement == 'l':
+            self.box.y = self.y + ((self.title_render.get_height() - self.size) / 2)
+        elif self.box_placement == 'r':
+            self.box.y = self.y + ((self.title_render.get_height() - self.size) / 2)

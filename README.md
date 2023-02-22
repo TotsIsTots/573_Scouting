@@ -6,14 +6,18 @@ Data from the QR codes can be handled however it is needed, but we are working o
 
 ## Installation and Running
 Python is required for running. If it is not already installed, you can download and install it from [here](https://www.python.org/downloads/). When installing, make sure to select "Add Python 3.xx to PATH" when prompted.
-Running this requires the modules pygame, qrcode, and Pillow to be installed. You can install them with this command, from your command line:
-`pip install pygame qrcode Pillow`
+Running the scouting app requires the modules pygame, qrcode, and Pillow to be installed. Running "teamfinder.py" requires the modules tbapy and pyperclip. You can install all of them with this command, from your command line:
+`pip install pygame qrcode Pillow tbapy pyperclip`
 
 When these modules are installed, clone this repository and run "main.py". Every time a QR Code is generated, it will be saved to the "QR Codes" folder with the date, match number, and team number selected.
 
 ## Settings
 The settings are stored in the "config.ini" file. It looks like this inside:
 ```
+[Matches]
+# list of event matches
+match_list = 
+
 [Scrolling]
 # Scrolling speed per scroll increment (in pixels)
 scroll_speed = 10
@@ -32,7 +36,7 @@ background_path = Assets/background.png
 
 [ActionButtons]
 # position of "Generate" and "Reset" buttons in pixels
-action_buttons_pos = 350, 350
+action_buttons_pos = 20, 500
 
 # size of "Generate" and "Reset" buttons in pixels
 action_buttons_size = 50
@@ -52,7 +56,18 @@ save_path = QR Codes
 ```
 To change any values, open the file in a text editor and replace the default values with the new ones you want.
 
-## Fields
+## Auto Team Number Selection
+The team numbers for the event matches can be set manually or automatically. To set them manually, open the config file and change "match_list".
+### Manually
+To automattically present the team numbers for the current match in your event, set match_list to be a list of dictionaries with the following format in the example below:
+```matches = [{'red': ['1596', '4715', '7782'], 'blue': ['6079', '7823', '5505']}, {'red': ['5216', '4827', '6112'], 'blue': ['6345', '4391', '5230']}, ...]```
+This is would it would look like for the 2022 Michigan Escanaba event, shown [here](https://www.thebluealliance.com/event/2022miesc).
+
+### Automatically
+Alternitively, you can run "teamfinder.py" with an internet connection. When running, it will prompt you for an event code. This is the code that is used in the URL for the event on The Blue Alliance. For example, the event code for the 2022 Michigan Escanaba event is "2022miesc". You can find the event code by going to the event on The Blue Alliance and copying the last part of the URL. It will look something like this: "https://www.thebluealliance.com/event/2022miesc". The event code is the part after the last "/". In this case, it is "2022miesc". It will then copy the matches to your clipboard, so you can paste it into the config file.
+
+
+## Input Fields
 Every input field has values that can be changed at and/or after initialization. They are listed here with their variable types. if there is an "=" after a value, it is optional and a default value is listed. Obviously, a value defined at initialization is already defined for after initialization. Each has methods, all include an update(), draw(self), and handleInput() methods which are already handled in the code and will not be listed here. The TextField object has a special method listed below.
 
 ### Header
@@ -166,6 +181,24 @@ Every input field has values that can be changed at and/or after initialization.
 > get_string(self) -> str
 
 When called on a TextField object, it will return a single string of the compiled content in the object with "\n" used for new lines. 
+
+### TeamColorToggle
+**At initialization:**
+- x: float
+- y: float
+- title: str
+- size: int
+- box_placement: str = 'l' (u, d, l, and r are accepted)
+
+**After initialization:**
+- y: float
+- title: str
+- title_color: tuple = (0, 0, 0)
+- title_font: [pygame.font.SysFont](https://www.pygame.org/docs/ref/font.html#pygame.font.SysFont) = pg.font.SysFont('arial', size)
+- box_thickness: float = 4
+- box_color: tuple = (255, 0, 0)
+- box_border_color: tuple = (0, 0, 0)
+- value: str = 'red'
 
 ## Field Initialization
 Examples of initialization can be found in the main function.

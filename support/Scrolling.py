@@ -17,7 +17,10 @@ def get_off(event) -> float:
     global scroll_speed
     screen_h = pg.display.get_surface().get_size()[1]
     # calculates new scroll offset
+    if screen_h >= display_height:
+        scroll_off = 0
     if event.type == pg.MOUSEBUTTONDOWN and screen_h < display_height:
+    # if True:
         if event.button == 4:
             scroll_off -= scroll_speed
             if scroll_off < 0:

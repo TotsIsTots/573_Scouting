@@ -1,6 +1,4 @@
-import Scrolling
-import UI_Elements
-import QR
+from support import QR, Scrolling, UI_Elements
 import pygame as pg
 import math
 from datetime import date
@@ -9,23 +7,32 @@ import configparser
 
 def main():
     # it is HIGHLY reccomended that these exist, but you can change parameters such as size, position etc.
-    global match_number, team_number
+    global match_number, team_color, team_number
     match_number = UI_Elements.Counter(
         20, 80, 64, 1, "Match number", 32)
-    team_number = UI_Elements.TextField(
-        20, 200, 128, 32, 30, title='Team Number', title_size=32)
+    
+    team_color = UI_Elements.TeamColorToggle(20, 150, 'Color', 64)
+    
+    if matches:
+        team_number = UI_Elements.Dropdown(
+            20, 270, 120, 50, matches[match_number.value - 1]['red'], "Team number", 32)
+    else:
+        team_number = UI_Elements.TextField(
+            20, 270, 120, 50, 30, title='Team Number', title_size=32)
 
     # Initialize data input objects and headers here, QR code lists data in order of initialization
     header_example = UI_Elements.Header(32, 'Game time!', 24)
 
-    dropdown_example = UI_Elements.Dropdown(
-        20, 300, 256, 64, ["1", "two", "0011", "IV", "0x05"], "Number", 32)
-
-    check_example = UI_Elements.Checkmark(350, 50, "Water game?", 64)
+    check_example = UI_Elements.Checkmark(380, 50, "Water game?", 64)
 
     text_field_example = UI_Elements.TextField(
-        350, 180, 256, 128, 24, title='Notes', title_size=24)
+        380, 180, 256, 128, 24, title='Notes', title_size=24)
 
+    dropdown_example = UI_Elements.Dropdown(
+        380, 350, 256, 64, ["1", "two", "0011", "IV", "0x05"], "Number", 32)
+    
+    header_test = UI_Elements.Header(1450, 'Test', 24)
+    
     #!!!=== All code below this line is for drawing the display, handling inputs, generating QR codes, etc. ===!!!
     #!!!===                 It is not reccomended to change anything below this line.                       ===!!!
 
@@ -41,6 +48,7 @@ def main():
             UI_Elements.Dropdown.handleInput(event)
             UI_Elements.Checkmark.handleInput(event)
             UI_Elements.Counter.handleInput(event)
+            team_color.handleInput(event)
 
             # Generate and Reset buttons
             handleActionInputs(event)
@@ -56,6 +64,10 @@ def main():
         UI_Elements.Dropdown.update()
         UI_Elements.Checkmark.update()
         UI_Elements.TextField.update()
+        team_color.update()
+        
+        if matches:
+            team_number.options = matches[match_number.value - 1][team_color.value]
 
         drawDisplay(screen_w, screen_h)
 
@@ -71,6 +83,8 @@ UI_Elements.init()
 # load settings from config file
 config = configparser.ConfigParser()
 config.read('config.ini')
+
+matches = list(eval(config['Matches']['match_list'])) if config['Matches']['match_list'] != '' else None
 
 Scrolling.scroll_speed = int(config['Scrolling']['scroll_speed'])
 Scrolling.display_height = int(config['Scrolling']['display_height'])
@@ -115,7 +129,7 @@ reset_rect = pg.Rect(
 def compileData(seperator: str = ',') -> str:
     data = ''
     for element in UI_Elements.list:
-        if type(element).__name__ == "Counter" or type(element).__name__ == "Checkmark":
+        if type(element).__name__ == "Counter" or type(element).__name__ == "Checkmark" or type(element).__name__ == "TeamColorToggle":
             data += str(element.value) + seperator
         if type(element).__name__ == "Dropdown":
             data += element.selected_str + seperator
@@ -148,6 +162,7 @@ def handleScrolling(scroll_change):
         dropdown.y -= scroll_change
     for textField in UI_Elements.TextField.textField_list:
         textField.y -= scroll_change
+    team_color.y -= scroll_change
 
     generate_rect.y -= scroll_change
     reset_rect.y -= scroll_change
@@ -158,7 +173,7 @@ def handleActionInputs(event):
         mouse_pos = pg.mouse.get_pos()
         if generate_rect.collidepoint(mouse_pos):
             QR.saveAndShow(str(date.today()) + '_Match_' + str(match_number.value) +
-                           '_Team_' + team_number.content[0], compileData(), QR_display_size, (screen_w, screen_h), QR_save_path)
+                           '_Team_' + (team_number.selected_str if matches else team_number.content[0]), compileData(), QR_display_size, (screen_w, screen_h), QR_save_path)
         if reset_rect.collidepoint(mouse_pos):
             reset()
 
@@ -182,6 +197,8 @@ def drawDisplay(screen_w, screen_h):
         textField.draw()
     for header in UI_Elements.Header.header_list:
         header.draw()
+        
+    team_color.draw()
 
     pg.draw.rect(WIN, generate_button_color, generate_rect,
                  border_radius=action_buttons_size // 5)
