@@ -29,6 +29,12 @@ def getEventMatchTeams(key):
     return alliances
 
 teams = getEventMatchTeams(event)
-print("\n" + str(teams))
-pyperclip.copy(str(teams))
-input("\n\033[1m\033[92mCopied to clipboard!\033[0m\n\nPress any key to continue.")
+if teams == []:
+    print("\n\033[1m\033[91mNo teams found for event " + event + "\033[0m")
+    input("\nPress Enter to continue.")
+else:
+    print("\n" + str(teams))
+    pyperclip.copy(str(teams))
+    print("\n\033[1m\033[92mCopied to clipboard!\033[0m")
+    input("\n\nPress Enter to continue.")
+
