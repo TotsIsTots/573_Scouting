@@ -206,7 +206,7 @@ When called on a TextField object, it will return a single string of the compile
 
 ## Field Initialization
 Examples of initialization can be found in the main function.
-```
+```python
 [...]
     # Initialize data input objects and headers here, QR code lists data in order of initialization
     header_example = UI_Elements.Header(32, 'Game time!', 24)
