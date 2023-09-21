@@ -15,7 +15,7 @@ If git is installed, you can copy and paste this command to clone this repositor
 
 ## Settings
 The settings are stored in the "main_config.ini" file. It looks like this inside:
-```
+```ini
 [Matches]
 # list of event matches
 match_list = 
